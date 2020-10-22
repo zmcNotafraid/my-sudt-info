@@ -1,10 +1,6 @@
 // Import from `core` instead of from `std` since we are in no-std mode
 use core::result::Result;
 
-// Import heap related library from `alloc`
-// https://doc.rust-lang.org/alloc/index.html
-// use alloc::{vec::Vec};
-
 // Import CKB syscalls and structures
 // https://nervosnetwork.github.io/ckb-std/riscv64imac-unknown-none-elf/doc/ckb_std/index.html
 use ckb_std::{
@@ -14,6 +10,7 @@ use ckb_std::{
 };
 
 use crate::blake2b::blake2b_256;
+use crate::error::Error;
 
 pub fn main() -> Result<(), Error> {
     let script = load_script()?;
