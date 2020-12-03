@@ -1,6 +1,6 @@
 # my-sudt-info
 
-Save sudt info like decimal, token_name, symbol and other customer info, bind with sudt cell.
+Save sudt info like decimal, token_name, symbol and other customer info, bind with sudt cell.Design document is [here](https://talk.nervos.org/t/a-sudt-information-storage-meta-cell-design-proposal/5011)
 
 ## Validator Rules
 

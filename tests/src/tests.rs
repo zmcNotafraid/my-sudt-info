@@ -127,7 +127,3 @@ fn test_input_lock_hash_not_include_sudt_type_args() {
     );
 }
 
-#[test]
-fn test_not_udt_cell() {
-
-}
