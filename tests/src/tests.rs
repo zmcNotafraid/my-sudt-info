@@ -8,10 +8,11 @@ use ckb_tool::ckb_types::{
 use ckb_testtool::{builtin::ALWAYS_SUCCESS, context::Context};
 use ckb_tool::{ckb_error::assert_error_eq, ckb_script::ScriptError};
 
-const MAX_CYCLES: u64 = 100_0000;
+const MAX_CYCLES: u64 = 1_000_000;
 // errors
 const INFO_TYPE_ARGS_NOT_MATCH: i8 = 5;
 const OWNER_LOCK_SCRIPT_NOT_MATCH: i8 = 6;
+const WRONG_DATA_STRUCT: i8 = 7;
 
 fn build_test_context(
     sudt_type_args: Option<Bytes>,
@@ -40,7 +41,6 @@ fn build_test_context(
     let sudt_script = context
         .build_script(&sudt_always_success_out_point.clone(), sudt_type_args.unwrap_or(owner_lock_script_args.clone()))
         .expect("script");
-    // let sudt_script_dep = CellDep::new_builder().out_point(sudt_always_success_out_point).build();
 
     let sudt_script_hash_args: Bytes = sudt_script.calc_script_hash().raw_data();
     let sudt_info_script = context
@@ -88,7 +88,13 @@ fn build_test_context(
 
 #[test]
 fn test_verify_succeed() {
-    let (mut context, tx) = build_test_context(None, None, Bytes::from(hex::decode("060a55534420436f696e0a555344430a546f74616c737570706c793a31303030303030302e3030303030300a4f66666963616c20536974653a68747470733a2f2f7777772e63656e7472652e696f2f0a4465736372697074696f6e3a78787878").unwrap()));
+    let (mut context, tx) = build_test_context(
+            None,
+            None,
+            Bytes::from(
+                hex::decode("060a55534420436f696e0a555344430a546f74616c737570706c793a31303030303030302e3030303030300a4f66666963616c20536974653a68747470733a2f2f7777772e63656e7472652e696f2f0a4465736372697074696f6e3a78787878").unwrap()
+            )
+        );
     let tx = context.complete_tx(tx);
 
     let cycles = context
@@ -127,3 +133,59 @@ fn test_input_lock_hash_not_include_sudt_type_args() {
     );
 }
 
+#[test]
+fn test_data_is_null() {
+    let (mut context, tx) = build_test_context(
+            None,
+            None,
+            Bytes::from(hex::decode("").unwrap())
+        );
+    let tx = context.complete_tx(tx);
+
+        // run
+    let err = context.verify_tx(&tx, MAX_CYCLES).unwrap_err();
+    let script_cell_index = 1;
+    assert_error_eq!(
+        err,
+        ScriptError::ValidationFailure(WRONG_DATA_STRUCT).output_type_script(script_cell_index)
+    );
+}
+
+#[test]
+fn test_data_len_less_than_three() {
+    let (mut context, tx) = build_test_context(
+            None,
+            None,
+            Bytes::from(
+                hex::decode("060a55534420436f696e").unwrap()
+            )
+        );
+    let tx = context.complete_tx(tx);
+
+    let err = context.verify_tx(&tx, MAX_CYCLES).unwrap_err();
+    let script_cell_index = 1;
+    assert_error_eq!(
+        err,
+        ScriptError::ValidationFailure(WRONG_DATA_STRUCT).output_type_script(script_cell_index)
+    );
+}
+
+#[test]
+fn test_data_decimal_not_a_byte() {
+    let (mut context, tx) = build_test_context(
+            None,
+            None,
+            Bytes::from(
+                hex::decode("55534420436f696e0a55534420436f696e0a555344430a546f74616c737570706c793a31303030303030302e3030303030300a4f66666963616c20536974653a68747470733a2f2f7777772e63656e7472652e696f2f0a4465736372697074696f6e3a78787878").unwrap()
+            )
+        );
+    let tx = context.complete_tx(tx);
+
+        // run
+    let err = context.verify_tx(&tx, MAX_CYCLES).unwrap_err();
+    let script_cell_index = 1;
+    assert_error_eq!(
+        err,
+        ScriptError::ValidationFailure(WRONG_DATA_STRUCT).output_type_script(script_cell_index)
+    );
+}
