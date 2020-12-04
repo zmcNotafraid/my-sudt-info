@@ -13,7 +13,6 @@
 // define modules
 mod entry;
 mod error;
-mod blake2b;
 
 use ckb_std::{
     default_alloc,
