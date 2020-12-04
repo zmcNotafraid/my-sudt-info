@@ -7,8 +7,7 @@ pub enum Error {
     ItemMissing,
     LengthNotEnough,
     Encoding,
-    InfoTypeArgsNotMatch,
-    OwnerLockScriptNotMatch,
+    OwnerLockScriptNotExist = 5
 }
 
 impl From<SysError> for Error {
