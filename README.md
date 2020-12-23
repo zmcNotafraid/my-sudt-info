@@ -4,8 +4,8 @@ Save sudt info like decimal, token_name, symbol and other customer info, bind wi
 
 ## Validator Rules
 
-- sudt info cell's type script args must equal sudt cell's type hash
-- sudt cell's type args(owner lock script hash) should be used in transaction inputs cells
+- SUDT Info Cell's type script's args save account's lock hash, and this lock script must exist in input cells.
+- SUDT Info Cell's data now only save decimal, token name and symbol.We don't validate data format in contract.
 
 ## Tutorial
 
@@ -20,6 +20,15 @@ Run tests:
 ``` sh
 capsule test
 ```
+
+## TestNet Depoly Info
+|parameter| value|
+|-----|-----|
+|`code_hash`|`0x72f3d72944f29511eedf806d4b12d77ca0a5cfbb2000d059d8898d283971b579`|
+|`hash_type`|`type`|
+|`tx_hash`|`0x81eeaaedc2909faf471cc17f8aeb66dd5e78d50ad1b7eb56e41ab821ee356330`|
+|`index`|`0x0`|
+|`dep_type`|`code`|
 
 ## Transaction Struct
 
