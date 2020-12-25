@@ -50,21 +50,19 @@ transaction:
   outputs:
     // sudt cell
     - capacity: "142.0"
-      lock:
+      lock: 256k1/blake160 lock script
       type:
         args: **ownder lock script**
         code_hash: **sudt code hash**
         hash_type: data
     //sudt info cell
     - capacity: "350.0"
-      lock:
-        args: **sudt type script hash**
+      lock: 256k1/blake160 lock script
+      type:
+        args: **ownder lock script hash**
         code_hash: **sudt info code hash**
         hash_type: type
-      type:
-        args: **sudt type script hash**
-        code_hash: **sudt info code hash**
-        hash_type: data
+    //cost fee cell
     - capacity: "199507.9"
       lock:
       type:
